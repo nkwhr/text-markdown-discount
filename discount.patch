@@ -1,0 +1,27 @@
+--- discount/html5.c.orig	2013-08-05 12:24:40.000000000 -0700
++++ discount/html5.c	2013-08-05 12:25:02.000000000 -0700
+@@ -3,11 +3,11 @@
+ #include "tags.h"
+ 
+ void
+-mkd_with_html5_tags()
++mkd_with_html5_tags(int force)
+ {
+     static int populated = 0;
+ 
+-    if ( populated ) return;
++    if ( populated && !force ) return;
+     populated = 1;
+ 
+     mkd_define_tag("ASIDE", 0);
+--- discount/tags.c.orig	2013-08-05 12:24:40.000000000 -0700
++++ discount/tags.c	2013-08-05 12:25:02.000000000 -0700
+@@ -26,6 +26,8 @@
+      * either the standard or extra tag tables.
+      */
+     if ( !(p = mkd_search_tags(id, strlen(id))) ) {
++	if ( S(extratags) == 0 )
++	    CREATE(extratags);
+ 	p = &EXPAND(extratags);
+ 	p->id = id;
+ 	p->size = strlen(id);

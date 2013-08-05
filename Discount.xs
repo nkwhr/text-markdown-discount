@@ -49,8 +49,11 @@ TextMarkdown__markdown(sv_str, flags, with_html5)
         int szhtml;
         MMIOT *doc;
     CODE:
-        if ( with_html5 )
-            mkd_with_html5_tags();
+        if ( with_html5 ) {
+            mkd_with_html5_tags(1); // force load
+        } else {
+            mkd_shlib_destructor();
+        }
 
         if ( (doc = mkd_string(text, strlen(text), flags)) == 0 ) {
             croak("failed at mkd_string");
