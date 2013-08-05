@@ -35,23 +35,30 @@ sub new {
 }
 
 sub markdown {
-    my ($self, $text, $flags) = @_;
+    my ($self, $text, $flags, $opts) = @_;
+
+    if (not defined $flags) {
+        $flags = MKD_NOHEADER()|MKD_NOPANTS();
+    }
+
+    if (not defined $opts or ref($opts) ne 'HASH') {
+        $opts = {};
+    }
+
+    my $with_html5 = $opts->{with_html5} ? 1 : 0;
 
     # Detect functional mode, and create an instance for this run..
     unless (ref $self) {
         if ( $self ne __PACKAGE__ ) {
             my $ob = __PACKAGE__->new();
                                 # $self is text, $text is options
-            return $ob->markdown($self, $text, $flags);
+            return $ob->markdown($self, $text, $flags, $with_html5);
         }
         else {
             croak('Calling ' . $self . '->markdown (as a class method) is not supported.');
         }
     }
-    if (not defined $flags) {
-        $flags = MKD_NOHEADER()|MKD_NOPANTS();
-    }
-    return _markdown($text, $flags);
+    return _markdown($text, $flags, $with_html5);
 }
 
 

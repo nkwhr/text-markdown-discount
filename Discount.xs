@@ -37,9 +37,10 @@ BOOT:
     newCONSTSUB(stash, "MKD_EXTRA_FOOTNOTE", newSViv(MKD_EXTRA_FOOTNOTE));
 
 SV *
-TextMarkdown__markdown(sv_str, flags)
+TextMarkdown__markdown(sv_str, flags, with_html5)
         SV *sv_str
         int flags;
+        int with_html5;
     PREINIT:
         bool is_utf8 = SvUTF8(sv_str) != 0; // SvUTF8 doesn't typecast consistently to bool across various archs
         char *text = SvPV_nolen(sv_str);
@@ -48,6 +49,9 @@ TextMarkdown__markdown(sv_str, flags)
         int szhtml;
         MMIOT *doc;
     CODE:
+        if ( with_html5 )
+            mkd_with_html5_tags();
+
         if ( (doc = mkd_string(text, strlen(text), flags)) == 0 ) {
             croak("failed at mkd_string");
         }
